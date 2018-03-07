@@ -1,5 +1,6 @@
 defmodule JcbetsOtp.Worker do
   use GenServer
+  alias JcbetsOtp.HttpCaller
 
   # Client API
 
@@ -18,7 +19,7 @@ defmodule JcbetsOtp.Worker do
   # Server API
 
   def handle_call({:record, manager}, _from, stats) do
-    case fetch_record(manager) do
+    case HttpCaller.fetch_record(manager) do
       {:ok, tuple} ->
         new_stats = update_stats(stats, tuple)
         {:reply, tuple, new_stats}
@@ -31,30 +32,15 @@ defmodule JcbetsOtp.Worker do
     {:reply, stats, stats}
   end
 
+
   # Server Callbacks
 
   def init(:ok) do
     {:ok, %{}}
   end
 
+
   # Helper functions
-
-  @spec fetch_record(String.t()) :: list(integer)
-  defp fetch_record(manager) do
-    base_url() <> manager
-    |> HTTPoison.get()
-    |> parse_response
-  end
-
-  defp parse_response({:ok, %HTTPoison.Response{body: body, status_code: 200}}) do
-    body |> Poison.decode!() |> compute_record
-  end
-
-  defp parse_response(_), do: :error
-
-  defp compute_record(json) do
-    {:ok, {json["name"], json["record"]}}
-  end
 
   defp update_stats(stats, {name, record}) do
     case Map.has_key?(stats, name) do
@@ -63,5 +49,4 @@ defmodule JcbetsOtp.Worker do
     end
   end
 
-  defp base_url, do: "http://ec2-54-245-62-121.us-west-2.compute.amazonaws.com/api/vgl/manager/"
 end
