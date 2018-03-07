@@ -2,9 +2,10 @@ defmodule JcbetsOtp do
   alias JcbetsOtp.Worker
 
   def hello do
-    {:ok, pid} = Worker.start_link
-    Worker.get_record(pid, "jc")
-    Worker.get_record(pid, "lafer")
-    Worker.get_stats(pid)
+    {:ok, process} = Worker.start_link
+    ["jc", "lafer"] |> Enum.each(fn m -> Worker.get_record process, m end)
+    stats = Worker.get_stats(process)
+    Worker.stop()
+    stats
   end
 end
