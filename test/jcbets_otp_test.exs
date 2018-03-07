@@ -3,6 +3,6 @@ defmodule JcbetsOtpTest do
   doctest JcbetsOtp
 
   test "greets the world" do
-    assert JcbetsOtp.hello() == :world
+    assert JcbetsOtp.hello() == %{"jc" => [118, 81, 0], "lafer" => [99, 113, 0]}
   end
 end
