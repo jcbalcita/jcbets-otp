@@ -1,6 +1,7 @@
 defmodule JcbetsOtp.Worker do
   use GenServer
-  alias JcbetsOtp.HttpCaller
+
+  @http_caller Application.get_env(:jcbets_otp, :http_caller)
 
   # Client API
 
@@ -19,7 +20,7 @@ defmodule JcbetsOtp.Worker do
   # Server API
 
   def handle_call({:record, manager}, _from, stats) do
-    case HttpCaller.fetch_record(manager) do
+    case @http_caller.fetch_record(manager) do
       {:ok, tuple} ->
         new_stats = update_stats(stats, tuple)
         {:reply, tuple, new_stats}
@@ -42,7 +43,7 @@ defmodule JcbetsOtp.Worker do
 
   # Helper functions
 
-  defp update_stats(stats, {name, record}) do
+  defp update_stats(stats, %{"name" => name, "record" => record}) do
     case Map.has_key?(stats, name) do
       true -> stats
       false -> Map.put(stats, name, record)
