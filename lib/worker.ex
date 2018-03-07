@@ -27,9 +27,9 @@ defmodule JcbetsOtp.Worker do
 
   def handle_call({:record, manager}, _from, stats) do
     case @http_caller.fetch_record(manager) do
-      {:ok, tuple} ->
-        new_stats = update_stats(stats, tuple)
-        {:reply, tuple, new_stats}
+      {:ok, manager_map} ->
+        new_stats = update_stats(stats, manager_map)
+        {:reply, manager_map, new_stats}
       _ ->
         {:reply, "Unable to fetch stats for this manager", stats}
     end
