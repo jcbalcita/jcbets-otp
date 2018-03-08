@@ -37,10 +37,13 @@ defmodule JcbetsOtp.Worker do
     {:reply, stats, stats}
   end
 
-  def handle_cast(:stop, stats) do
+  def handle_call(:stop, stats) do
     {:stop, :normal, stats}
   end
 
+  def handle_cast(:stop, stats) do
+    {:stop, :normal, stats}
+  end
 
   # Server Callbacks
 
