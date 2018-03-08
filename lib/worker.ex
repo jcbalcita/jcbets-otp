@@ -1,26 +1,24 @@
 defmodule JcbetsOtp.Worker do
   use GenServer
 
-  @pid JW
-
   @http_caller Application.get_env(:jcbets_otp, :http_caller)
 
   # Client API
 
   def start_link(opts \\ []) do
-    GenServer.start_link(__MODULE__, :ok, opts ++ [name: JW])
+    GenServer.start_link(__MODULE__, :ok, opts)
   end
 
   def get_record(pid, manager) do
-    GenServer.call(@pid, {:record, manager})
+    GenServer.call(pid, {:record, manager})
   end
 
   def get_stats(pid) do
-    GenServer.call(@pid, :get_stats)
+    GenServer.call(pid, :get_stats)
   end
 
-  def stop do
-    GenServer.cast(@name, :stop)
+  def stop(pid) do
+    GenServer.cast(pid, :stop)
   end
 
   # Server API
