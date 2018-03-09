@@ -29,7 +29,7 @@ defmodule JcbetsOtp.Worker do
         new_stats = update_stats(stats, manager_map)
         {:reply, manager_map, new_stats}
       _ ->
-        {:reply, "Unable to fetch stats for this manager", stats}
+        {:reply, {:error, "Unable to fetch stats for this manager"}, stats}
     end
   end
 
@@ -44,6 +44,7 @@ defmodule JcbetsOtp.Worker do
   def handle_cast(:stop, stats) do
     {:stop, :normal, stats}
   end
+
 
   # Server Callbacks
 
@@ -60,5 +61,7 @@ defmodule JcbetsOtp.Worker do
       false -> Map.put(stats, name, record)
     end
   end
+
+  defp update_stats(stats, _), do: stats
 
 end

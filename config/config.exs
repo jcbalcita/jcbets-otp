@@ -27,4 +27,4 @@ config :jcbets_otp, :http_caller, JcbetsOtp.HttpCaller
 # Configuration from the imported file will override the ones defined
 # here (which is why it is important to import them last).
 #
-import_config "test.exs"
+import_config "#{Mix.env}.exs"

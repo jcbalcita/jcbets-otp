@@ -13,9 +13,11 @@ defmodule JcbetsOtp.HttpCaller do
 
   defp parse_response(_), do: :error
 
-  defp compute_record(json) do
+  defp compute_record(%{"name" => _, "record" => _} = json) do
     {:ok, json}
   end
+
+  defp compute_record(_), do: :error
 
   defp base_url, do: "http://ec2-54-245-62-121.us-west-2.compute.amazonaws.com/api/vgl/manager/"
 end

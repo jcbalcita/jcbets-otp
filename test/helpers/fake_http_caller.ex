@@ -24,7 +24,10 @@ defmodule JcbetsOtp.FakeHttpCaller do
 
   @spec fetch_record(String.t()) :: list(integer)
   def fetch_record(manager) do
-    {:ok, @fake_data[manager]}
+    case @fake_data[manager] do
+      nil -> {:error, "Unable to fetch stats for this manager"}
+      _   -> {:ok, @fake_data[manager]}
+    end
   end
 
 end
