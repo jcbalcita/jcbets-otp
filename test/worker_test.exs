@@ -14,36 +14,57 @@ defmodule JcbetsWorkerTest do
   end
 
   test "returns error tuple if manager doesn't exist", %{process: process} do
-    # given
+    # GIVEN
     non_existent_manager = "whoami"
-    expected_response = {:error, "Unable to fetch stats for this manager"}
+    expected = {:error, "Unable to fetch stats for this manager"}
 
-    # when
+    # WHEN
     actual = Worker.get_record(process, non_existent_manager)
 
-    # then
-    assert(expected_response == actual)
+    # THEN
+    assert(expected == actual)
   end
 
-  test "returns map tuple if manager exists", %{process: process} do
-    # given
+  test "returns map if manager exists", %{process: process} do
+    # GIVEN
     existing_manager = "lafer"
-    expected_response =   %{
+    expected =   %{
       "id" => 2,
-      "mer" => "-169.46",
       "name" => "lafer",
-      "podium_score" => 14,
-      "podiums" => [1, 3, 0],
       "points" => "20738.87",
       "record" => [99, 113, 0],
-      "seasons" => 16
     }
 
-    # when
+    # WHEN
     actual = Worker.get_record(process, existing_manager)
 
-    # then
-    assert(expected_response == actual)
+    # THEN
+    assert(expected == actual)
+  end
+
+  test "stop/1 gracefully stops the process", %{process: process} do
+    # GIVEN
+    expected = :ok
+
+    # WHEN
+    actual = Worker.stop(process)
+
+    # THEN
+    assert(expected == actual)
+  end
+
+  test "builds stats after each successful call to get_record/2", %{process: process} do
+    # WHEN
+    Worker.get_record(process, "lafer")
+    Worker.get_record(process, "test")
+    Worker.get_record(process, "i don't exist")
+    stats = Worker.get_stats(process)
+
+    # THEN
+    assert(Map.has_key? stats, "lafer")
+    assert(Map.has_key? stats, "test")
+    refute(Map.has_key? stats, "i don't exist")
+    refute(Map.has_key? stats, "jc")
   end
 
 end

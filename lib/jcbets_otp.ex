@@ -6,7 +6,10 @@ defmodule JcbetsOtp do
     {:ok, process} = Worker.start_link()
 
     managers |> Enum.each(fn m -> Worker.get_record process, m end)
-    Worker.get_stats(process)
+    stats = Worker.get_stats(process)
+    Worker.stop(process)
+
+    stats
   end
 
 end
