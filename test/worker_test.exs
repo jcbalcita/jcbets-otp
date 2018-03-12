@@ -43,14 +43,7 @@ defmodule JcbetsWorkerTest do
   end
 
   test "stop/1 gracefully stops the process", %{process: process} do
-    # GIVEN
-    expected = :ok
-
-    # WHEN
-    actual = Worker.stop(process)
-
-    # THEN
-    assert(expected == actual)
+    assert(:ok == Worker.stop(process))
   end
 
   test "builds stats after each successful call to get_record/2", %{process: process} do
